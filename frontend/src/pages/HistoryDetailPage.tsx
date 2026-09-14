@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
   Alert,
+  Button,
   Chip,
   Paper,
   Stack,
@@ -12,6 +13,7 @@ import FindingsTable from '../components/FindingsTable';
 
 export default function HistoryDetailPage() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const api = useApi();
   const [data, setData] = useState<any>(null);
   const [error, setError] = useState('');
@@ -38,6 +40,22 @@ export default function HistoryDetailPage() {
           label={data.ok ? '通过' : '未通过'}
           color={data.ok ? 'success' : 'error'}
         />
+        <Button
+          size="small"
+          variant="outlined"
+          onClick={() =>
+            navigate('/analyze', {
+              state: {
+                preset: {
+                  sql: data.sqlFull || data.sqlSummary,
+                  dialect: data.dialect,
+                },
+              },
+            })
+          }
+        >
+          回填分析台
+        </Button>
       </Stack>
       <Typography variant="body2" color="text.secondary">
         {data.dialect} · {new Date(data.createdAt).toLocaleString()} ·{' '}
